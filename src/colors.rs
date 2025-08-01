@@ -3,6 +3,11 @@
 
 use iced::{color, Color};
 
+/// #FFFFFF
+pub const WHITE: Color = color!(0xffffff);
+/// #000000
+pub const BLACK: Color = color!(0x000000);
+
 /// #C9C9C9
 pub const DARK_0: Color = color!(0xC9C9C9);
 /// #b8b8b8

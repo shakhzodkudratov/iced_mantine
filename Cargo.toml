@@ -4,4 +4,12 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+dark-light = "2.0.0"
 iced = "0.13.1"
+iced_core = "0.13.2"
+iced_widget = "0.13.4"
+once_cell = "1.21.3"
+
+[package.metadata.docs.rs]
+rustdoc-args = ["--cfg", "docsrs"]
+all-features = true
