@@ -3,7 +3,7 @@
 
 use iced::Theme;
 
-use crate::utils;
+use crate::{palettes::{self, Palette}, utils};
 
 
 #[derive(Debug, Clone, PartialEq)]
@@ -11,7 +11,8 @@ pub struct MantineTheme {
     pub mode: Mode,
     /// rem units scale, change if you customize font-size of [`Widget`] element
     /// default value is `1` (for `100%`/`16px` font-size on [`Widget`])
-    pub scale: f32
+    pub scale: f32,
+    pub primary_palette: Palette,
 }
 
 impl MantineTheme {
@@ -32,7 +33,7 @@ impl Default for MantineTheme {
                 }
             });
 
-        Self { mode: DEFAULT.clone(), scale: 16.0 }
+        Self { mode: DEFAULT.clone(), scale: 16.0, primary_palette: palettes::BLUE }
     }
 }
 

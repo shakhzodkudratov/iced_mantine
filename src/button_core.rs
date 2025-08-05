@@ -1,11 +1,7 @@
 use iced::{Background, Border, Color, Event, Length, Padding, Rectangle, Shadow, Vector};
 use iced_core::{event, layout, mouse, overlay, renderer, touch, widget::{tree, Operation, Tree}, Clipboard, Element, Layout, Shell, Widget};
 
-use crate::{colors, MantineTheme, Mode};
-
-// use crate::theme::Mode;
-
-// use crate::theme::Theme;
+use crate::{colors, palettes::Palette, MantineTheme, Mode};
 
 /// The possible status of a [`Button`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -69,6 +65,13 @@ impl Style {
         }
     }
 
+    pub fn with_border(self, border: impl Into<Border>) -> Self {
+        Self {
+            border: Some(border.into()),
+            ..self
+        }
+    }
+
     fn with_padding(self, padding: impl Into<Padding>) -> Style {
         Self {
             padding: Some(padding.into()),
@@ -99,27 +102,100 @@ pub enum Variant {
 }
 
 impl Variant {
-    pub fn from(&self, theme: &MantineTheme, status: Status) -> Style {
+    pub fn from(&self, theme: &MantineTheme, palette: Option<&Palette>, status: Status) -> Style {
         let base = Style::default();
+
+        let palette = palette.unwrap_or(&theme.primary_palette);
+
+        if status == Status::Disabled {
+            return match theme.mode {
+                Mode::Light => base.with_background(colors::GRAY_2).with_text_color(colors::GRAY_5),
+                Mode::Dark => base.with_background(colors::DARK_6).with_text_color(colors::DARK_3),
+            };
+        }
 
         match theme.mode {
             Mode::Light => match self {
-                Variant::Default => base.with_background(colors::WHITE).with_text_color(colors::BLACK),
-                Variant::Filled => base,
-                Variant::Light => base,
-                Variant::Outline => base,
-                Variant::Subtle => base,
-                Variant::Transparent => base,
-                Variant::White => base,
+                Variant::Default => match status {
+                    Status::Active => base.with_background(colors::WHITE).with_text_color(colors::BLACK),
+                    Status::Hovered | Status::Pressed => base.with_background(colors::GRAY_0).with_text_color(colors::BLACK),
+                    _ => base,
+                },
+                Variant::Filled => match status {
+                    Status::Active => base.with_background(palette.6).with_text_color(colors::WHITE),
+                    Status::Hovered | Status::Pressed => base.with_background(palette.7).with_text_color(colors::WHITE),
+                    _ => base,
+                },
+                Variant::Light => match status {
+                    Status::Active => base.with_background(palette.6).with_text_color(colors::WHITE),
+                    Status::Hovered | Status::Pressed => base.with_background(palette.7).with_text_color(colors::WHITE),
+                    _ => base,
+                },
+                Variant::Outline => match status {
+                    Status::Active => base.with_background(palette.6).with_text_color(colors::WHITE),
+                    Status::Hovered | Status::Pressed => base.with_background(palette.7).with_text_color(colors::WHITE),
+                    _ => base,
+                },
+                Variant::Subtle => match status {
+                    Status::Active => base.with_background(palette.6).with_text_color(colors::WHITE),
+                    Status::Hovered | Status::Pressed => base.with_background(palette.7).with_text_color(colors::WHITE),
+                    _ => base,
+                },
+                Variant::Transparent => match status {
+                    Status::Active | Status::Hovered | Status::Pressed => base.with_text_color(palette.3),
+                    _ => base,
+                },
+                Variant::White => match status {
+                    Status::Active | Status::Hovered | Status::Pressed => base.with_background(colors::WHITE).with_text_color(palette.8),
+                    _ => base,
+                },
             },
             Mode::Dark => match self {
-                Variant::Default => base.with_background(colors::DARK_6).with_text_color(colors::WHITE),
-                Variant::Filled => base,
-                Variant::Light => base,
-                Variant::Outline => base,
-                Variant::Subtle => base,
-                Variant::Transparent => base,
-                Variant::White => base,
+                Variant::Default => match status {
+                    Status::Active => base
+                        .with_background(colors::DARK_6)
+                        .with_text_color(colors::WHITE)
+                        .with_border(Border::default().color(colors::DARK_4).width(1.0)),
+                    Status::Hovered | Status::Pressed => base
+                        .with_background(colors::DARK_5)
+                        .with_text_color(colors::WHITE)
+                        .with_border(Border::default().color(colors::DARK_4).width(1.0)),
+                    _ => base,
+                },
+                Variant::Filled => match status {
+                    Status::Active => base.with_background(palette.6).with_text_color(colors::WHITE),
+                    Status::Hovered | Status::Pressed => base.with_background(palette.7).with_text_color(colors::WHITE),
+                    _ => base,
+                },
+                Variant::Light => match status {
+                    Status::Active => base.with_background(palette.6.scale_alpha(0.15)).with_text_color(palette.3),
+                    Status::Hovered | Status::Pressed => base.with_background(palette.6.scale_alpha(0.2)).with_text_color(palette.3),
+                    _ => base,
+                },
+                Variant::Outline => match status {
+                    Status::Active => base
+                        .with_background(palette.4.scale_alpha(0.0))
+                        .with_text_color(palette.4)
+                        .with_border(Border::default().color(palette.4).width(1.0)),
+                    Status::Hovered | Status::Pressed => base
+                        .with_background(palette.4.scale_alpha(0.01))
+                        .with_text_color(palette.4)
+                        .with_border(Border::default().color(palette.4).width(1.0)),
+                    _ => base,
+                },
+                Variant::Subtle => match status {
+                    Status::Active => base.with_text_color(palette.3),
+                    Status::Hovered | Status::Pressed => base.with_background(palette.6.scale_alpha(0.2)).with_text_color(palette.3),
+                    _ => base,
+                },
+                Variant::Transparent => match status {
+                    Status::Active | Status::Hovered | Status::Pressed => base.with_text_color(palette.3),
+                    _ => base,
+                },
+                Variant::White => match status {
+                    Status::Active | Status::Hovered | Status::Pressed => base.with_background(colors::WHITE).with_text_color(palette.8),
+                    _ => base,
+                },
             },
         }
     }
@@ -171,13 +247,6 @@ impl Radius {
     }
 }
 
-/// A primary button; denoting a main action.
-pub fn default(theme: &MantineTheme, variant: Variant, size: Size, radius: Radius, status: Status) -> Style {
-    variant.from(theme, status)
-        .merge(&size.from(theme))
-        .merge(&radius.from(theme))
-}
-
 enum OnPress<'a, Message> {
     Direct(Message),
     Closure(Box<dyn Fn() -> Message + 'a>),
@@ -202,6 +271,7 @@ where
     width: Length,
     height: Length,
     variant: Variant,
+    palette: Option<Palette>,
     size: Size,
     radius: Radius,
     clip: bool,
@@ -228,6 +298,7 @@ where
             variant: Variant::Default,
             size: Size::Sm,
             radius: Radius::Sm,
+            palette: None,
             clip: false,
         }
     }
@@ -306,6 +377,16 @@ where
 
     pub fn radius(mut self, radius: Radius) -> Self {
         self.radius = radius;
+        self
+    }
+
+    pub fn variant(mut self, variant: Variant) -> Self {
+        self.variant = variant;
+        self
+    }
+
+    pub fn palette(mut self, palette: Palette) -> Self {
+        self.palette = Some(palette);
         self
     }
 }
@@ -481,7 +562,7 @@ where
             Status::Active
         };
 
-        let style = self.variant.from(self.theme, status)
+        let style = self.variant.from(self.theme, self.palette.as_ref(), status)
             .merge(&self.size.from(self.theme))
             .merge(&self.radius.from(self.theme));
 

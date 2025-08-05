@@ -1,11 +1,14 @@
+#![warn(rustdoc::missing_doc_code_examples)]
+
 use iced::Element;
 
-use crate::button::Button;
+use crate::button_core::Button;
 
 pub mod colors;
-pub mod button;
+pub mod button_core;
 pub mod theme;
 pub mod utils;
+pub mod palettes;
 
 pub use theme::MantineTheme;
 pub use theme::Mode;
