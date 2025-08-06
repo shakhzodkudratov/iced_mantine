@@ -6,6 +6,32 @@ use iced_core::{
 
 use crate::{MantineTheme, Mode, colors, palettes::Palette};
 
+/// Creates a new [`Button`] with the provided content.
+///
+///
+/// # Example
+/// ```
+/// use iced_mantine::button::button;
+///
+/// #[derive(Clone)]
+/// enum Message {
+///     ButtonPressed,
+/// }
+///
+/// fn view(state: &State) -> Element<'_, Message> {
+///     button("Press me!").on_press(Message::ButtonPressed).into()
+/// }
+/// ```
+pub fn button<'a, Message, Theme, Renderer>(
+    content: impl Into<Element<'a, Message, Theme, Renderer>>,
+    theme: &'a MantineTheme,
+) -> Button<'a, Message, Theme, Renderer>
+where
+    Renderer: iced_core::Renderer,
+{
+    Button::new(content, theme)
+}
+
 /// The possible status of a [`Button`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Status {
@@ -67,6 +93,7 @@ impl Style {
         }
     }
 
+    /// Updates the [`Style`] with the given [`Border`].
     pub fn with_border(self, border: impl Into<Border>) -> Self {
         Self {
             border: Some(border.into()),
@@ -74,6 +101,7 @@ impl Style {
         }
     }
 
+    /// Updates the [`Style`] with the given inner [`Padding`].
     fn with_padding(self, padding: impl Into<Padding>) -> Style {
         Self {
             padding: Some(padding.into()),
@@ -81,6 +109,7 @@ impl Style {
         }
     }
 
+    /// Updates the [`Style`] with the given [`iced::border::Radius`].
     fn with_radius(self, radius: impl Into<iced::border::Radius>) -> Style {
         Self {
             radius: Some(radius.into()),
@@ -88,9 +117,6 @@ impl Style {
         }
     }
 }
-
-/// A styling function for a [`Button`].
-pub type StyleFn<'a, Theme> = Box<dyn Fn(&Theme, Variant, Size, Radius, Status) -> Style + 'a>;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Variant {
@@ -450,29 +476,25 @@ where
         self
     }
 
-    // /// Sets the style class of the [`Button`].
-    // #[cfg(feature = "advanced")]
-    // #[must_use]
-    // pub fn class(mut self, class: impl Into<Theme::Class<'a>>) -> Self {
-    //     self.class = class.into();
-    //     self
-    // }
-
+    /// Sets the [`Size`] for the [`Button`]
     pub fn size(mut self, size: Size) -> Self {
         self.size = size;
         self
     }
 
+    /// Sets the [`Radius`] for the [`Button`]
     pub fn radius(mut self, radius: Radius) -> Self {
         self.radius = radius;
         self
     }
 
+    /// Sets the [`Variant`] for the [`Button`]
     pub fn variant(mut self, variant: Variant) -> Self {
         self.variant = variant;
         self
     }
 
+    /// Sets the [`Palette`] for the [`Button`]
     pub fn palette(mut self, palette: Palette) -> Self {
         self.palette = Some(palette);
         self

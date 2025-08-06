@@ -4,29 +4,49 @@ use crate::colors;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Palette(
+    /// Shade 0
     pub Color,
+    /// Shade 1
     pub Color,
+    /// Shade 2
     pub Color,
+    /// Shade 3
     pub Color,
+    /// Shade 4
     pub Color,
+    /// Shade 5
     pub Color,
+    /// Shade 6
     pub Color,
+    /// Shade 7
     pub Color,
+    /// Shade 8
     pub Color,
+    /// Shade 9
     pub Color,
 );
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Shade {
+    /// Shade 0
     _0,
+    /// Shade 1
     _1,
+    /// Shade 2
     _2,
+    /// Shade 3
     _3,
+    /// Shade 4
     _4,
+    /// Shade 5
     _5,
+    /// Shade 6
     _6,
+    /// Shade 7
     _7,
+    /// Shade 8
     _8,
+    /// Shade 9
     _9,
 }
 

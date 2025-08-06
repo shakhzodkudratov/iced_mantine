@@ -1,7 +1,7 @@
 use iced::{Length, Padding};
 use iced_mantine::{
-    MantineTheme, button,
-    button_core::{Button, Radius, Size, Variant},
+    MantineTheme,
+    button::{Button, Radius, Size, Variant, button},
     palettes,
 };
 use iced_widget::{Column, Row, Text, column, container, row, scrollable};
