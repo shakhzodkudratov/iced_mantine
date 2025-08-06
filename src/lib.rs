@@ -4,11 +4,11 @@ use iced::Element;
 
 use crate::button_core::Button;
 
-pub mod colors;
 pub mod button_core;
+pub mod colors;
+pub mod palettes;
 pub mod theme;
 pub mod utils;
-pub mod palettes;
 
 pub use theme::MantineTheme;
 pub use theme::Mode;
@@ -33,11 +33,10 @@ pub use theme::Mode;
 /// ```
 pub fn button<'a, Message, Theme, Renderer>(
     content: impl Into<Element<'a, Message, Theme, Renderer>>,
-    theme: &'a MantineTheme
+    theme: &'a MantineTheme,
 ) -> Button<'a, Message, Theme, Renderer>
 where
     Renderer: iced_core::Renderer,
 {
     Button::new(content, theme)
 }
-

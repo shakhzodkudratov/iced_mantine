@@ -1,9 +1,14 @@
 // https://github.com/mantinedev/mantine/blob/master/packages/%40mantine/core/src/core/MantineProvider/default-colors.ts
 // https://mantine.dev/theming/colors/#default-colors
 
-use iced::{color, Color};
+use iced::{Color, color};
 
-pub const TRANSPARENT: Color = Color { r: 0.0, g: 0.0, b: 0.0, a: 0.0};
+pub const TRANSPARENT: Color = Color {
+    r: 0.0,
+    g: 0.0,
+    b: 0.0,
+    a: 0.0,
+};
 
 /// #FFFFFF
 pub const WHITE: Color = color!(0xffffff);

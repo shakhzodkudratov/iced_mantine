@@ -1,7 +1,10 @@
 use iced::{Background, Border, Color, Event, Length, Padding, Rectangle, Shadow, Vector};
-use iced_core::{event, layout, mouse, overlay, renderer, touch, widget::{tree, Operation, Tree}, Clipboard, Element, Layout, Shell, Widget};
+use iced_core::{
+    Clipboard, Element, Layout, Shell, Widget, event, layout, mouse, overlay, renderer, touch,
+    widget::{Operation, Tree, tree},
+};
 
-use crate::{colors, palettes::Palette, MantineTheme, Mode};
+use crate::{MantineTheme, Mode, colors, palettes::Palette};
 
 /// The possible status of a [`Button`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -17,8 +20,7 @@ pub enum Status {
 }
 
 /// The style of a button.
-#[derive(Debug, Clone, Copy, PartialEq)]
-#[derive(Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Default)]
 pub struct Style {
     /// The [`Background`] of the button.
     pub background: Option<Background>,
@@ -33,7 +35,7 @@ pub struct Style {
     /// The inner [`Padding`] of the button.
     pub padding: Option<Padding>,
     /// The outer [`Padding`] of the button.
-    pub margin: Option<Padding>
+    pub margin: Option<Padding>,
 }
 
 impl Style {
@@ -56,7 +58,7 @@ impl Style {
             ..self
         }
     }
-    
+
     /// Updates the [`Style`] with the given [`Color`].
     pub fn with_text_color(self, color: impl Into<Color>) -> Self {
         Self {
@@ -98,7 +100,7 @@ pub enum Variant {
     Outline,
     Subtle,
     Transparent,
-    White
+    White,
 }
 
 impl Variant {
@@ -107,47 +109,78 @@ impl Variant {
 
         let palette = palette.unwrap_or(&theme.primary_palette);
 
-        if status == Status::Disabled {
-            return match theme.mode {
-                Mode::Light => base.with_background(colors::GRAY_2).with_text_color(colors::GRAY_5),
-                Mode::Dark => base.with_background(colors::DARK_6).with_text_color(colors::DARK_3),
-            };
-        }
-
         match theme.mode {
             Mode::Light => match self {
                 Variant::Default => match status {
-                    Status::Active => base.with_background(colors::WHITE).with_text_color(colors::BLACK),
-                    Status::Hovered | Status::Pressed => base.with_background(colors::GRAY_0).with_text_color(colors::BLACK),
-                    _ => base,
+                    Status::Active => base
+                        .with_background(colors::WHITE)
+                        .with_text_color(colors::BLACK),
+                    Status::Hovered | Status::Pressed => base
+                        .with_background(colors::GRAY_0)
+                        .with_text_color(colors::BLACK),
+                    Status::Disabled => base
+                        .with_background(colors::GRAY_2)
+                        .with_text_color(colors::GRAY_5),
                 },
                 Variant::Filled => match status {
-                    Status::Active => base.with_background(palette.6).with_text_color(colors::WHITE),
-                    Status::Hovered | Status::Pressed => base.with_background(palette.7).with_text_color(colors::WHITE),
-                    _ => base,
+                    Status::Active => base
+                        .with_background(palette.6)
+                        .with_text_color(colors::WHITE),
+                    Status::Hovered | Status::Pressed => base
+                        .with_background(palette.7)
+                        .with_text_color(colors::WHITE),
+                    Status::Disabled => base
+                        .with_background(colors::GRAY_2)
+                        .with_text_color(colors::GRAY_5),
                 },
                 Variant::Light => match status {
-                    Status::Active => base.with_background(palette.6).with_text_color(colors::WHITE),
-                    Status::Hovered | Status::Pressed => base.with_background(palette.7).with_text_color(colors::WHITE),
-                    _ => base,
+                    Status::Active => base
+                        .with_background(palette.6)
+                        .with_text_color(colors::WHITE),
+                    Status::Hovered | Status::Pressed => base
+                        .with_background(palette.7)
+                        .with_text_color(colors::WHITE),
+                    Status::Disabled => base
+                        .with_background(colors::GRAY_2)
+                        .with_text_color(colors::GRAY_5),
                 },
                 Variant::Outline => match status {
-                    Status::Active => base.with_background(palette.6).with_text_color(colors::WHITE),
-                    Status::Hovered | Status::Pressed => base.with_background(palette.7).with_text_color(colors::WHITE),
-                    _ => base,
+                    Status::Active => base
+                        .with_background(palette.6)
+                        .with_text_color(colors::WHITE),
+                    Status::Hovered | Status::Pressed => base
+                        .with_background(palette.7)
+                        .with_text_color(colors::WHITE),
+                    Status::Disabled => base
+                        .with_background(colors::GRAY_2)
+                        .with_text_color(colors::GRAY_5),
                 },
                 Variant::Subtle => match status {
-                    Status::Active => base.with_background(palette.6).with_text_color(colors::WHITE),
-                    Status::Hovered | Status::Pressed => base.with_background(palette.7).with_text_color(colors::WHITE),
-                    _ => base,
+                    Status::Active => base
+                        .with_background(palette.6)
+                        .with_text_color(colors::WHITE),
+                    Status::Hovered | Status::Pressed => base
+                        .with_background(palette.7)
+                        .with_text_color(colors::WHITE),
+                    Status::Disabled => base
+                        .with_background(colors::GRAY_2)
+                        .with_text_color(colors::GRAY_5),
                 },
                 Variant::Transparent => match status {
-                    Status::Active | Status::Hovered | Status::Pressed => base.with_text_color(palette.3),
-                    _ => base,
+                    Status::Active | Status::Hovered | Status::Pressed => {
+                        base.with_text_color(palette.3)
+                    }
+                    Status::Disabled => base
+                        .with_background(colors::GRAY_2)
+                        .with_text_color(colors::GRAY_5),
                 },
                 Variant::White => match status {
-                    Status::Active | Status::Hovered | Status::Pressed => base.with_background(colors::WHITE).with_text_color(palette.8),
-                    _ => base,
+                    Status::Active | Status::Hovered | Status::Pressed => base
+                        .with_background(colors::WHITE)
+                        .with_text_color(palette.8),
+                    Status::Disabled => base
+                        .with_background(colors::GRAY_2)
+                        .with_text_color(colors::GRAY_5),
                 },
             },
             Mode::Dark => match self {
@@ -160,17 +193,31 @@ impl Variant {
                         .with_background(colors::DARK_5)
                         .with_text_color(colors::WHITE)
                         .with_border(Border::default().color(colors::DARK_4).width(1.0)),
-                    _ => base,
+                    Status::Disabled => base
+                        .with_background(colors::DARK_6)
+                        .with_text_color(colors::DARK_3),
                 },
                 Variant::Filled => match status {
-                    Status::Active => base.with_background(palette.6).with_text_color(colors::WHITE),
-                    Status::Hovered | Status::Pressed => base.with_background(palette.7).with_text_color(colors::WHITE),
-                    _ => base,
+                    Status::Active => base
+                        .with_background(palette.6)
+                        .with_text_color(colors::WHITE),
+                    Status::Hovered | Status::Pressed => base
+                        .with_background(palette.7)
+                        .with_text_color(colors::WHITE),
+                    Status::Disabled => base
+                        .with_background(colors::DARK_6)
+                        .with_text_color(colors::DARK_3),
                 },
                 Variant::Light => match status {
-                    Status::Active => base.with_background(palette.6.scale_alpha(0.15)).with_text_color(palette.3),
-                    Status::Hovered | Status::Pressed => base.with_background(palette.6.scale_alpha(0.2)).with_text_color(palette.3),
-                    _ => base,
+                    Status::Active => base
+                        .with_background(palette.6.scale_alpha(0.15))
+                        .with_text_color(palette.3),
+                    Status::Hovered | Status::Pressed => base
+                        .with_background(palette.6.scale_alpha(0.2))
+                        .with_text_color(palette.3),
+                    Status::Disabled => base
+                        .with_background(colors::DARK_6)
+                        .with_text_color(colors::DARK_3),
                 },
                 Variant::Outline => match status {
                     Status::Active => base
@@ -181,20 +228,34 @@ impl Variant {
                         .with_background(palette.4.scale_alpha(0.01))
                         .with_text_color(palette.4)
                         .with_border(Border::default().color(palette.4).width(1.0)),
-                    _ => base,
+                    Status::Disabled => base
+                        .with_background(colors::DARK_6)
+                        .with_text_color(colors::DARK_3),
                 },
                 Variant::Subtle => match status {
                     Status::Active => base.with_text_color(palette.3),
-                    Status::Hovered | Status::Pressed => base.with_background(palette.6.scale_alpha(0.2)).with_text_color(palette.3),
-                    _ => base,
+                    Status::Hovered | Status::Pressed => base
+                        .with_background(palette.6.scale_alpha(0.2))
+                        .with_text_color(palette.3),
+                    Status::Disabled => base
+                        .with_background(colors::DARK_6)
+                        .with_text_color(colors::DARK_3),
                 },
                 Variant::Transparent => match status {
-                    Status::Active | Status::Hovered | Status::Pressed => base.with_text_color(palette.3),
-                    _ => base,
+                    Status::Active | Status::Hovered | Status::Pressed => {
+                        base.with_text_color(palette.3)
+                    }
+                    Status::Disabled => base
+                        .with_background(colors::DARK_6)
+                        .with_text_color(colors::DARK_3),
                 },
                 Variant::White => match status {
-                    Status::Active | Status::Hovered | Status::Pressed => base.with_background(colors::WHITE).with_text_color(palette.8),
-                    _ => base,
+                    Status::Active | Status::Hovered | Status::Pressed => base
+                        .with_background(colors::WHITE)
+                        .with_text_color(palette.8),
+                    Status::Disabled => base
+                        .with_background(colors::DARK_6)
+                        .with_text_color(colors::DARK_3),
                 },
             },
         }
@@ -207,7 +268,7 @@ pub enum Size {
     Sm,
     Md,
     Lg,
-    Xl
+    Xl,
 }
 
 impl Size {
@@ -215,11 +276,41 @@ impl Size {
         let base = Style::default();
 
         match self {
-            Size::Xs => base.with_padding(Padding::default().top(theme.from_rem(0.4375)).bottom(theme.from_rem(0.4375)).left(theme.from_rem(0.875)).right(theme.from_rem(0.875))),
-            Size::Sm => base.with_padding(Padding::default().top(theme.from_rem(0.5625)).bottom(theme.from_rem(0.5625)).left(theme.from_rem(1.125)).right(theme.from_rem(1.125))),
-            Size::Md => base.with_padding(Padding::default().top(theme.from_rem(0.75)).bottom(theme.from_rem(0.75)).left(theme.from_rem(1.325)).right(theme.from_rem(1.325))),
-            Size::Lg => base.with_padding(Padding::default().top(theme.from_rem(0.8125)).bottom(theme.from_rem(0.8125)).left(theme.from_rem(1.625)).right(theme.from_rem(1.625))),
-            Size::Xl => base.with_padding(Padding::default().top(theme.from_rem(1.0625)).bottom(theme.from_rem(1.0625)).left(theme.from_rem(2.0)).right(theme.from_rem(2.0))),
+            Size::Xs => base.with_padding(
+                Padding::default()
+                    .top(theme.from_rem(0.4375))
+                    .bottom(theme.from_rem(0.4375))
+                    .left(theme.from_rem(0.875))
+                    .right(theme.from_rem(0.875)),
+            ),
+            Size::Sm => base.with_padding(
+                Padding::default()
+                    .top(theme.from_rem(0.5625))
+                    .bottom(theme.from_rem(0.5625))
+                    .left(theme.from_rem(1.125))
+                    .right(theme.from_rem(1.125)),
+            ),
+            Size::Md => base.with_padding(
+                Padding::default()
+                    .top(theme.from_rem(0.75))
+                    .bottom(theme.from_rem(0.75))
+                    .left(theme.from_rem(1.325))
+                    .right(theme.from_rem(1.325)),
+            ),
+            Size::Lg => base.with_padding(
+                Padding::default()
+                    .top(theme.from_rem(0.8125))
+                    .bottom(theme.from_rem(0.8125))
+                    .left(theme.from_rem(1.625))
+                    .right(theme.from_rem(1.625)),
+            ),
+            Size::Xl => base.with_padding(
+                Padding::default()
+                    .top(theme.from_rem(1.0625))
+                    .bottom(theme.from_rem(1.0625))
+                    .left(theme.from_rem(2.0))
+                    .right(theme.from_rem(2.0)),
+            ),
         }
     }
 }
@@ -230,7 +321,7 @@ pub enum Radius {
     Sm,
     Md,
     Lg,
-    Xl
+    Xl,
 }
 
 impl Radius {
@@ -284,7 +375,7 @@ where
     /// Creates a new [`Button`] with the given content.
     pub fn new(
         content: impl Into<Element<'a, Message, Theme, Renderer>>,
-        theme: &'a MantineTheme
+        theme: &'a MantineTheme,
     ) -> Self {
         let content = content.into();
         let size = content.as_widget().size_hint();
@@ -338,10 +429,7 @@ where
     /// This closure will only be called when the [`Button`] is actually pressed and,
     /// therefore, this method is useful to reduce overhead if creating the resulting
     /// message is slow.
-    pub fn on_press_with(
-        mut self,
-        on_press: impl Fn() -> Message + 'a,
-    ) -> Self {
+    pub fn on_press_with(mut self, on_press: impl Fn() -> Message + 'a) -> Self {
         self.on_press = Some(OnPress::Closure(Box::new(on_press)));
         self
     }
@@ -439,11 +527,9 @@ where
             self.height,
             style.padding.unwrap_or_default(),
             |limits| {
-                self.content.as_widget().layout(
-                    &mut tree.children[0],
-                    renderer,
-                    limits,
-                )
+                self.content
+                    .as_widget()
+                    .layout(&mut tree.children[0], renderer, limits)
             },
         )
     }
@@ -506,8 +592,7 @@ where
             }
             Event::Mouse(mouse::Event::ButtonReleased(mouse::Button::Left))
             | Event::Touch(touch::Event::FingerLifted { .. }) => {
-                if let Some(on_press) = self.on_press.as_ref().map(OnPress::get)
-                {
+                if let Some(on_press) = self.on_press.as_ref().map(OnPress::get) {
                     let state = tree.state.downcast_mut::<State>();
 
                     if state.is_pressed {
@@ -562,10 +647,11 @@ where
             Status::Active
         };
 
-        let style = self.variant.from(self.theme, self.palette.as_ref(), status)
+        let style = self
+            .variant
+            .from(self.theme, self.palette.as_ref(), status)
             .merge(&self.size.from(self.theme))
             .merge(&self.radius.from(self.theme));
-
 
         if style.background.is_some()
             || style.border.map(|b| b.width > 0.0).unwrap_or(false)

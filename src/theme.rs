@@ -3,8 +3,10 @@
 
 use iced::Theme;
 
-use crate::{palettes::{self, Palette}, utils};
-
+use crate::{
+    palettes::{self, Palette},
+    utils,
+};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct MantineTheme {
@@ -26,17 +28,20 @@ impl Default for MantineTheme {
         use once_cell::sync::Lazy;
 
         static DEFAULT: Lazy<Mode> =
-            Lazy::new(|| match dark_light::detect().unwrap_or(dark_light::Mode::Unspecified) {
-                dark_light::Mode::Dark => Mode::Dark,
-                dark_light::Mode::Light | dark_light::Mode::Unspecified => {
-                    Mode::Light
-                }
-            });
+            Lazy::new(
+                || match dark_light::detect().unwrap_or(dark_light::Mode::Unspecified) {
+                    dark_light::Mode::Dark => Mode::Dark,
+                    dark_light::Mode::Light | dark_light::Mode::Unspecified => Mode::Light,
+                },
+            );
 
-        Self { mode: DEFAULT.clone(), scale: 16.0, primary_palette: palettes::BLUE }
+        Self {
+            mode: DEFAULT.clone(),
+            scale: 16.0,
+            primary_palette: palettes::BLUE,
+        }
     }
 }
-
 
 // use iced::Theme;
 
